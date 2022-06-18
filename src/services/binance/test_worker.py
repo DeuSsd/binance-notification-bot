@@ -23,12 +23,6 @@ class TestStringMethods(unittest.TestCase):
     def test_triggers(self):
         token = 'BTC/USDT'
         target_price = 10
-        # triggers = [
-            # 'more',
-            # 'more_eq',
-            # 'less',
-            # 'less_eq',
-            # ]
         
         trigger_more =  MarketSensor(token, trigger_type="more", trigger_price = float(target_price))
         trigger_more_eq =  MarketSensor(token, trigger_type="more_eq", trigger_price = float(target_price))

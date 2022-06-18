@@ -16,7 +16,6 @@ class Config(BaseModel):
     chat_id = IntegerField()
     status = BooleanField(default=True)
     delay = IntegerField(default=30)
-    selected_counter = IntegerField(default=0)
 
     class Meta:
         db_table = "config"

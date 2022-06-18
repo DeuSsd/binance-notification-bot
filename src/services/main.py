@@ -2,6 +2,10 @@ from pathlib import Path
 from tools.configTools import load_config
 from binance.worker import Worker
 
+
+
+
+
 binance_config_path = Path("src\\services\\binance\\config\\config.json")
 bnc = load_config(binance_config_path)
 
