@@ -1,72 +1,74 @@
-import websocket
+import json
+from pathlib import Path
+from typing import Dict
+# import websocket
+
+from .trigers import MarketSensor
+import websocket, rel
+# 
+# BASE_URL = 'wss://fstream.binance.com/stream?streams=bnbusdt@aggTrade/btcusdt@markPrice'
+BASE_URL = 'wss://fstream.binance.com/stream?streams='
 
 
-binance_tokens  = {
-	"BTC/USDT": {
-		"trigger": "more",
-		"price": "60000"
-	},
-	"ETH/BTC": {
-		"trigger": "less",
-		"price": "0.07"
-	},
-	"DOT/USDT": {
-		"trigger": "more_eq",
-		"price": "40"
-	},
-	"ETH/USDT": {
-		"trigger": "less_eq",
-		"price": "4000"
-	}
-}
+# websocket.enableTrace(True)
 
+class Worker:
+    def __init__(self, token: str, token_config: Dict[str, str]) -> None:
+        self.token_title = token
+        self.token = token.replace('/', '').lower()
+        
+        self.url = f"{BASE_URL}{self.token}@markPrice"
+        
+        trigger_type = token_config.get("trigger")
+        trigger_price = token_config.get("price")
+        self.marketSensor = MarketSensor(self.token, trigger_type, trigger_price)
+        
+        self.wsapp = self.subscribe(self.url)
+        
+        
 
-binance_tokens  = {
-	"BTC/USDT": {
-		"trigger": "more",
-		"price": "60000"
-	},
-	# "ETH/BTC": {
-	# 	"trigger": "less",
-	# 	"price": "0.07"
-	# },
-	# "DOT/USDT": {
-	# 	"trigger": "more_eq",
-	# 	"price": "40"
-	# },
-	# "ETH/USDT": {
-	# 	"trigger": "less_eq",
-	# 	"price": "4000"
-	# }
-}
+        
+    
+    def subscribe(self, url: str) -> websocket.WebSocketApp:
+        return websocket.WebSocketApp(
+            url, 
+            # on_open=self.on_open,
+            on_message=self.on_message,
+            # on_close=self.on_close
+        )
+        
 
-tokens = [ token.replace('/', '').lower() for token in binance_tokens.keys()]
+    def run_forever(self):
+        self.wsapp.run_forever(dispatcher=rel)
+        
+        
+        
+    # @staticmethod
+    # def on_open(ws):
+    #     ws.send(f"connected")
 
-print(tokens)
+    def on_message(self, ws, message):
+        msg = json.loads(message)
+        data = msg.get('data')
+        price = data.get('p')
+        
+        if self.marketSensor.trigger(float(price)):
+            print(f"Pair {self.token_title} was triggered: {price} {self.marketSensor.trigger_type} {self.marketSensor.trigger_price}")
+            
+     
+    # def owner(self, function):
+    #     def inner(*args, **kwargs):
+            
+    #         function(*args, **kwargs) 
+    #     return inner
+    # @staticmethod
+    # def on_close(ws, close_status_code, close_msg):
+    #     print(">>>>>>CLOSED")
 
-
-tokens_args_markPrice = [f"{token}@markPrice@1s" for token in tokens]
-
-
-
-print(tokens_args_markPrice)
-
-print("/".join(tokens_args_markPrice))
-
-BASE_URL = "wss://fstream.binance.com"
-# URL = "wss://fstream.binance.com/stream?streams=btcusdt@markPrice/btcusdt@markPrice"
-
-MARK_PRICE_STREAM_URL = f"{BASE_URL}/stream?streams={'/'.join(tokens_args_markPrice)}"
-
-print(MARK_PRICE_STREAM_URL)
-def on_message(wsapp, message):
-    print(message)
-
-
-wsapp = websocket.WebSocketApp(MARK_PRICE_STREAM_URL, on_message=on_message)
-
-
-
-
-
-wsapp.run_forever()
+    
+    
+    
+    
+if __name__ == "__main__":
+    pass
+    
