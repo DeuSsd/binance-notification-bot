@@ -1,14 +1,10 @@
 #!/usr/bin/python
 
-# This is a simple echo bot using the decorator mechanism.
-# It echoes any incoming text messages.
-
 from os import environ
 from pathlib import Path
 
 from .tools.configTools import load_config
 from . import blogic as bl 
-# from time import sleep
 # from telebot import TeleBot
 # import telebot
 from telebot.async_telebot import AsyncTeleBot
@@ -26,39 +22,7 @@ API_TOKEN = _load_env(load_config(api_token_path), "TOKEN")
 
 # bot = TeleBot(API_TOKEN)
 bot = AsyncTeleBot(API_TOKEN)
-print(API_TOKEN)
-
-# # Handle '/start' and '/help'
-# @bot.message_handler(commands=['help', 'start'])
-# def send_welcome(message):
-#     msg =  """\
-# Данный бот предназначен для выбора Красавчика дня!
-# Доступные команды:
-# - /enable - Включить нотификации
-# - /disable - Выключить нотификации
-# """
-#     bot.send_message(message.chat.id, msg, disable_notification=True)
-
-# @bot.message_handler(commands=['enable'])
-# def run_the_game(message):
-#     chat_id = message.chat.id
-#     status = bl.enable_notification(chat_id)
-#     if status:
-#         bot.send_message(chat_id, "Уведомления включены")
-        
-
-# @bot.message_handler(commands=['disable'])
-# def run_the_game(message):
-#     chat_id = message.chat.id
-#     status = bl.disable_notification(chat_id)
-#     if status:
-#         bot.send_message(chat_id, "Уведомления выключены")
-        
-        
-# def send_notifications(msg):
-#     list_chat_id = bl.collect_chat_for_notificate()
-#     for chat_id in list_chat_id:
-#         bot.send_message(chat_id, msg)
+# print(API_TOKEN)
 
 
 
@@ -76,7 +40,7 @@ async def send_welcome(message):
 
 
 @bot.message_handler(commands=['enable'])
-async def run_the_game(message):
+async def enable_notification(message):
     chat_id = message.chat.id
     status = bl.enable_notification(chat_id)
     if status:
@@ -84,7 +48,7 @@ async def run_the_game(message):
         
 
 @bot.message_handler(commands=['disable'])
-async def run_the_game(message):
+async def disable_notification(message):
     chat_id = message.chat.id
     status = bl.disable_notification(chat_id)
     if status:
@@ -94,7 +58,7 @@ async def run_the_game(message):
 async def send_notifications(msg):
     list_chat_id  = bl.collect_chat_for_notificate()
     for chat_id in list_chat_id:
-        print(chat_id, msg )
+        # print(chat_id, msg )
         await bot.send_message(chat_id, msg)
 
 

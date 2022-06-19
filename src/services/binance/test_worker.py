@@ -1,53 +1,34 @@
 import unittest
+import asyncio
+import queue as q  # syncronized queue class
+import websocket
+from .worker import Worker
 
-from .trigers import MarketSensor
 
-
-class TestStringMethods(unittest.TestCase):
-
-
+class TestSocket(unittest.TestCase):
     def test_empty_initialization(self):
-        token = 'BTC/USDT'
-        target_price = '60000'
+        queue = asyncio.Queue()
 
         with self.assertRaises(AssertionError):
-            token_noName = MarketSensor("", "", target_price)
+            worker = Worker(2, {"trigger": 'less', 'price': '123'}, queue)
         with self.assertRaises(AssertionError):
-            token_noTrigger =  MarketSensor(token, "", target_price)
+            worker = Worker('tokenName', {}, queue)
         with self.assertRaises(AssertionError):
-            token_falseTrigger =  MarketSensor(token, "less_then", target_price)
+            worker = Worker(
+                'tokenName', {"trigggger": 'less', 'price': '123'}, queue)
         with self.assertRaises(AssertionError):
-            token_falseTrigger =  MarketSensor(token, 2 , target_price)
-        
-        
-    def test_triggers(self):
-        token = 'BTC/USDT'
-        target_price = 10
-        
-        trigger_more =  MarketSensor(token, trigger_type="more", trigger_price = float(target_price))
-        trigger_more_eq =  MarketSensor(token, trigger_type="more_eq", trigger_price = float(target_price))
-        trigger_less =  MarketSensor(token, trigger_type="less", trigger_price = float(target_price))
-        trigger_less_eq =  MarketSensor(token, trigger_type="less_eq", trigger_price = float(target_price))
-        
-        self.assertTrue(trigger_more.trigger(target_price+1))
-        self.assertFalse(trigger_more.trigger(target_price))
-        self.assertFalse(trigger_more.trigger(target_price-1))
-        
-        self.assertTrue(trigger_more_eq.trigger(target_price+1))
-        self.assertTrue(trigger_more_eq.trigger(target_price))
-        self.assertFalse(trigger_more_eq.trigger(target_price-1))
-        
-        self.assertFalse(trigger_less.trigger(target_price+1))
-        self.assertFalse(trigger_less.trigger(target_price))
-        self.assertTrue(trigger_less.trigger(target_price-1))
-        
-        self.assertFalse(trigger_less_eq.trigger(target_price+1))
-        self.assertTrue(trigger_less_eq.trigger(target_price))
-        self.assertTrue(trigger_less_eq.trigger(target_price-1))
-        
+            worker = Worker(
+                'tokenName', {"trigggger": 'less', 'price': '123'}, 'queue')
         with self.assertRaises(AssertionError):
-            self.assertTrue(trigger_less_eq.trigger("sdsd"))
-        
-        
+            worker = Worker(
+                'tokenName', {"trigggger": 'less', 'price': '123'}, q.Queue())
+
+    def test_worker_connection(self):
+        queue = asyncio.Queue()
+        worker = Worker(
+            'BTC/USDT', {"trigger": 'less', 'price': '40000'}, queue)
+        self.assertTrue(isinstance(worker.wsapp, websocket.WebSocketApp))
+
+
 if __name__ == '__main__':
     unittest.main()

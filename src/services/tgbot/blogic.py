@@ -68,7 +68,7 @@ def collect_chat_for_notificate() -> list:
     return [item.chat_id for item in query]
 
 
-
+#TODO Выделить в отельную функцию _collback()?
 # def find_execute(chat_id: id, function: Callable):
 #     query = Config.select().where(
 #         (Config.chat_id == chat_id)
@@ -81,3 +81,5 @@ def collect_chat_for_notificate() -> list:
 #         selected_chat_config.delay = delay
 #         selected_chat_config.save()
 #     return True
+
+
