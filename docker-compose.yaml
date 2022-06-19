@@ -1,0 +1,18 @@
+version: "3.3"
+
+services:
+  selected-tgbot:
+    image: quteas/binance-notification-tgbot:latest
+    container_name: binance-notification-tgbot
+    command: bash -c "python /app/src/services/tgbot/models/createTables.py && python /app/src/main.py"
+    environment:
+      TOKEN: "0123456789:ABCDEFGHIABCDEFGHIJKLMNOPQRSTUVWXYZ"
+      TZ: "Europe/Moscow"
+    ports:
+      - 80:80
+      - 443:443
+      - 88:88
+      - 8443:8443
+    volumes:
+      - './database:/app/database'
+      - './config:/app/src/services/binance/config'

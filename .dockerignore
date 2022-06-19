@@ -1,0 +1,19 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# **/migrations
+# src/media
+# Procfile
+.vscode
+.git
+*.db
+*token.json
+User.json
+/database
+/venv
+README.md
+.dockerignore
+.git
+.gitignore
+Dockerfile
+docker-compose.yaml
