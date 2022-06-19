@@ -31,7 +31,7 @@ bot = AsyncTeleBot(API_TOKEN)
 # async def send_welcome(message: telebot.types.Message):
 async def send_welcome(message):
     msg =  """\
-Данный бот предназначен для выбора Красавчика дня!
+Данный бот предназначен для получения уведомлений о сработанных тригерах!
 Доступные команды:
 - /enable - Включить нотификации
 - /disable - Выключить нотификации
