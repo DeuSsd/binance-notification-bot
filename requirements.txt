@@ -19,7 +19,7 @@ pydantic==2.4.0
 Pygments==2.15.0
 pyTelegramBotAPI==4.5.1
 rel==0.4.7
-requests==2.31.0
+requests==2.32.0
 rich==12.4.4
 toml==0.10.2
 typing_extensions==4.2.0
